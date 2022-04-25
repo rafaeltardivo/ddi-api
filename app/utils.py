@@ -32,3 +32,17 @@ def get_environment_variables(variables: list) -> dict:
         MissingEnvironmentVariableError: if one of the variables is missing.
     """
     return {var: load_environment_variable(var) for var in variables}
+
+
+def get_db_credentials(env_vars: dict) -> dict:
+    """Retrieves database credentials.
+    Args:
+        env_vars (dict): loaded env vars.
+    Returns:
+        dict: dictionary containing all formatted database credentials.
+    """
+    return {
+        "url": f"http://{env_vars['INFLUXDB_HOST']}:{env_vars['INFLUXDB_PORT']}",
+        "token": env_vars["DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"],
+        "org": env_vars["DOCKER_INFLUXDB_INIT_ORG"],
+    }
