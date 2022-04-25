@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.0
+    ports:
+      - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=${DOCKER_INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    networks:
+      - app-tier
+  device-data-ingestion-api:
+    container_name: api
+    build: .
+    working_dir: /app
+    command: uvicorn app.main:app --host ${API_HOST} --reload
+    volumes:
+      - .:/app
+    ports:
+      - ${API_PORT}:${API_PORT}
+    networks:
+      - app-tier
+networks:
+  app-tier:
+    driver: bridge
+volumes:
+  influxdb-storage:
