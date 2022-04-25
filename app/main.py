@@ -13,7 +13,8 @@ def create_app():
     app = FastAPI()
 
     @app.middleware("http")
-    async def add_credentials_middleware(request: Request, call_next):
+    async def env_vars_middleware(request: Request, call_next):
+        """Middleware for state persistence of env vars."""
         request.state.env_vars = get_environment_variables(
             [
                 "INFLUXDB_HOST",
