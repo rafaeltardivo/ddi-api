@@ -43,9 +43,18 @@ async def test_create_event(mocked_create_event):
     assert response.json() == {"success": True}
 
 
-def test_get_device_histogram():
-    sensor_id = "sensor-1"
+@pytest.mark.asyncio
+@patch("app.main.get_histogram", new_callable=AsyncMock)
+async def test_get_device_histogram(mocked_get_histogram):
+    mocked_response = {
+        "ON": 1,
+        "OFF": 2,
+        "ACTIVE": 5,
+        "INACTIVE": 0,
+    }
+    mocked_get_histogram.return_value = mocked_response
 
-    response = client.get(f"/devices/histogram/{sensor_id}")
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {}
+    device_id = "sensor-1"
+    qs = "start=2020-01-02T03:44:00&stop=2020-01-02T03:46:00"
+    response = client.get(f"/devices/histogram/{device_id}?{qs}")
+    assert response.json() == mocked_response
