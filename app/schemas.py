@@ -20,6 +20,7 @@ class Event(BaseModel):
     timestamp: str
 
     def data(self):
+        """Return influxdb record compatible dict."""
         return {
             "measurement": "sensors",
             "tags": {"deviceId": self.device_id},
