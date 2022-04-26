@@ -68,7 +68,7 @@ def get_formatted_flux_query(bucket, query_parameters: dict) -> str:
     Returns:
         str: formatted flux query.
     """
-    device_id = query_parameters["device_id"]
+    device_id = query_parameters["deviceId"]
     start = query_parameters["start"]
     stop = query_parameters.get("stop")
 

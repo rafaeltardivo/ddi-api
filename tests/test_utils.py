@@ -64,7 +64,7 @@ def test_get_query_parameters():
 def test_get_formatted_flux_query():
     bucket = "test_bucket"
     query_parameters = {
-        "device_id": "sensor-1",
+        "deviceId": "sensor-1",
         "start": "2020-01-02T03:44:00",
         "stop": "2020-01-02T03:45:00",
     }
@@ -80,7 +80,7 @@ def test_get_formatted_flux_query():
 def test_get_formatted_flux_query_without_stop():
     bucket = "test_bucket"
     query_parameters = {
-        "device_id": "sensor-1",
+        "deviceId": "sensor-1",
         "start": "2020-01-02T03:44:00",
     }
 
