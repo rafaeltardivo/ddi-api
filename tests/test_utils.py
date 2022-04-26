@@ -1,19 +1,21 @@
 import os
 import pytest
-from unittest import mock
+from unittest.mock import patch
 
 from app.exceptions import MissingEnvironmentVariableError
 from app.utils import (
     load_environment_variable,
     get_environment_variables,
     get_db_credentials,
+    get_query_parameters,
+    get_formatted_flux_query,
 )
 
 
 def test_load_environment_variable():
     key, value = "FOO", "BAR"
 
-    with mock.patch.dict(os.environ, {key: value}):
+    with patch.dict(os.environ, {key: value}):
         var = load_environment_variable(key)
         assert var == value
 
@@ -25,7 +27,7 @@ def test_load_missing_environment_variable():
 
 def test_get_environment_variables():
     env_vars = {"ONE": "1", "TWO": "2"}
-    with mock.patch.dict(os.environ, env_vars):
+    with patch.dict(os.environ, env_vars):
         ret = get_environment_variables(env_vars.keys())
         assert ret == env_vars
 
@@ -44,4 +46,47 @@ def test_get_db_credentials():
     assert ret["token"] == env_vars["DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"]
     assert (
         ret["url"] == f"http://{env_vars['INFLUXDB_HOST']}:{env_vars['INFLUXDB_PORT']}"
+    )
+
+
+def test_get_query_parameters():
+    device_id = "sensor-1"
+    start = "2020-01-02T03:44:00"
+    stop = "2020-01-02T03:45:00"
+
+    ret = get_query_parameters(device_id, start, stop)
+
+    assert ret["deviceId"] == device_id
+    assert ret["start"] == start
+    assert ret["stop"] == stop
+
+
+def test_get_formatted_flux_query():
+    bucket = "test_bucket"
+    query_parameters = {
+        "device_id": "sensor-1",
+        "start": "2020-01-02T03:44:00",
+        "stop": "2020-01-02T03:45:00",
+    }
+
+    ret = get_formatted_flux_query(bucket, query_parameters)
+    assert ret == (
+        ' from(bucket:"test_bucket")'
+        " |> range(start: 2020-01-02T03:44:00Z, stop: 2020-01-02T03:45:00Z)"
+        ' |> filter(fn:(r) => r.deviceId == "sensor-1")'
+    )
+
+
+def test_get_formatted_flux_query_without_stop():
+    bucket = "test_bucket"
+    query_parameters = {
+        "device_id": "sensor-1",
+        "start": "2020-01-02T03:44:00",
+    }
+
+    ret = get_formatted_flux_query(bucket, query_parameters)
+    assert ret == (
+        ' from(bucket:"test_bucket")'
+        " |> range(start: 2020-01-02T03:44:00Z)"
+        ' |> filter(fn:(r) => r.deviceId == "sensor-1")'
     )
