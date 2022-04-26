@@ -10,6 +10,9 @@ from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 
 app = FastAPI()
 
+ISO_TIMESTAMP_REGEX = r"^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$"
+DEVICE_ID_REGEX = r"^(sensor-[0-9]+)$"
+
 
 @app.middleware("http")
 async def env_vars_middleware(request: Request, call_next):
@@ -48,9 +51,9 @@ async def create_device_event(request: Request, event: Event):
 @app.get("/devices/histogram/{device_id}")
 async def get_device_histogram(
     request: Request,
-    device_id: str = Path(..., title="Device id", regex=r"^(sensor-[0-9]+)$"),
-    start: str = Query(..., regex=r"^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$"),
-    stop: str | None = Query(None, regex=r"^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$"),
+    device_id: str = Path(..., title="Device id", regex=DEVICE_ID_REGEX),
+    start: str = Query(..., regex=ISO_TIMESTAMP_REGEX),
+    stop: str | None = Query(None, regex=ISO_TIMESTAMP_REGEX),
 ):
     db_credentials = get_db_credentials(request.state.env_vars)
     bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
