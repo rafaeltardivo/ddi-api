@@ -60,3 +60,23 @@ def env_vars():
         "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN": "mocked_token",
         "DOCKER_INFLUXDB_INIT_ORG": "mocked_org",
     }
+
+@pytest.fixture
+def event_request_payload():
+    return {
+        "deviceId": "sensor-1",
+        "timestamp": "2020-01-02T03:44:02",
+        "pressure": 212.0,
+        "status": "ON",
+        "temperature": 230,
+    }
+
+
+@pytest.fixture
+def histogram_response_payload():
+    return {
+        "ON": 1,
+        "OFF": 2,
+        "ACTIVE": 5,
+        "INACTIVE": 0,
+    }
