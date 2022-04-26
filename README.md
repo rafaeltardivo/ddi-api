@@ -3,6 +3,7 @@
 Device data ingestion API
 
 ## Technology
+
 - [python (3.10)](https://www.python.org/downloads/release/python-3100/);
 - [aiohttp](https://docs.aiohttp.org/en/stable/);
 - [fastapi](https://fastapi.tiangolo.com/);
@@ -12,7 +13,6 @@ Device data ingestion API
 - [pytest](https://docs.pytest.org/en/7.1.x/);
 - [docker](https://www.docker.com/);
 - [docker-compose](https://docs.docker.com/compose/).
-
 
 ## Architecture
 
@@ -77,15 +77,14 @@ make test
 make simulate
 ```
 
-
 ## API docs:
+
 [http://localhost:8000/docs](http://localhost:8000/docs)
-
-
 
 ### Final Considerations
 
 - This project is not "production ready". There's **a lot** to be improved here;
 - The async nature of the project is way to compensate for the lack of stream processing (the service is event drive and kafka would do a better job);
 - (Unfortunatelly) I was not able to create integrations tests (or even unit tests for the simulator). This would be my next step if I had more time;
+- In a real world scenario, I would use [locust](https://locust.io/) as the simulator;
 - The API is not fully documented;
