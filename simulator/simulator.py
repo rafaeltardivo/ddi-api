@@ -11,6 +11,8 @@ load_dotenv()
 
 
 class Producer:
+    """Producer class for the simulator."""
+
     def __init__(self):
         self.host = os.getenv("API_HOST")
         self.port = os.getenv("API_PORT")
@@ -23,7 +25,14 @@ class Producer:
                 print("Status:", response.status)
 
 
-async def simulate(start_date, end_date, status, device_id):
+async def simulate(start_date: str, end_date: str, status: str, device_id: str):
+    """Retrieve status frequency.
+    Args:
+        start_date (str): initial date range.
+        end_date: (str): end date range.
+        status: (str): status.
+        device_id: (str)device id.
+    """
     timestamps = pd.date_range(start=start_date, end=end_date, freq="H")
 
     producer = Producer()
