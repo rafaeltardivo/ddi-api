@@ -1,19 +1,17 @@
 import pytest
 
 from http import HTTPStatus
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 from app.main import app
 
-from .fixtures import device_id, start, stop
+from .fixtures import (
+    device_id, start, stop, event_request_payload, histogram_response_payload
+)
+from .base import AsyncMock
 
 client = TestClient(app)
-
-
-class AsyncMock(MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
 
 
 @pytest.mark.asyncio
@@ -28,18 +26,12 @@ async def test_health(mocked_ping):
 
 @pytest.mark.asyncio
 @patch("app.main.create_event", new_callable=AsyncMock)
-async def test_create_event(mocked_create_event):
+async def test_create_event(mocked_create_event, event_request_payload):
     mocked_create_event.return_value = True
 
     response = client.post(
         "/devices/events",
-        json={
-            "deviceId": "sensor-1",
-            "timestamp": "2020-01-02T03:44:02",
-            "pressure": 212.0,
-            "status": "ON",
-            "temperature": 230,
-        },
+        json=event_request_payload
     )
     assert response.status_code == HTTPStatus.CREATED
     assert response.json() == {"success": True}
@@ -47,15 +39,9 @@ async def test_create_event(mocked_create_event):
 
 @pytest.mark.asyncio
 @patch("app.main.get_histogram", new_callable=AsyncMock)
-async def test_get_device_histogram(mocked_get_histogram, device_id, start, stop):
-    mocked_response = {
-        "ON": 1,
-        "OFF": 2,
-        "ACTIVE": 5,
-        "INACTIVE": 0,
-    }
-    mocked_get_histogram.return_value = mocked_response
+async def test_get_device_histogram(mocked_get_histogram, device_id, start, stop, histogram_response_payload):
+    mocked_get_histogram.return_value = histogram_response_payload
 
     qs = f"start={start}&stop={stop}"
     response = client.get(f"/devices/histogram/{device_id}?{qs}")
-    assert response.json() == mocked_response
+    assert response.json() == histogram_response_payload

@@ -1,18 +1,13 @@
 from collections import Counter
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from app.use_cases import create_event, get_histogram
-from app.schemas import Event
 from app.utils import get_formatted_flux_query
 from .fixtures import db_credentials, bucket, event, query_parameters, frequency
-
-
-class AsyncMock(MagicMock):
-    async def __call__(self, *args, **kwargs):
-        return super().__call__(*args, **kwargs)
+from .base import AsyncMock
 
 
 @pytest.mark.asyncio
