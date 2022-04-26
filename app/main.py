@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import FastAPI, Request
 
-from .utils import get_environment_variables
+from .utils import get_environment_variables, get_db_credentials
 
 app = FastAPI()
 
@@ -35,15 +35,17 @@ app = create_app()
 
 @app.get("/health")
 async def health(request: Request):
-    print(request.state.env_vars)
+    db_credentials = get_db_credentials(request.state.env_vars)
     return {}
 
 
 @app.post("/devices/events", status_code=HTTPStatus.CREATED)
 async def create_event():
+    db_credentials = get_db_credentials(request.state.env_vars)
     return {}
 
 
 @app.get("/devices/histogram/{device_id}")
 async def get_device_histogram():
+    db_credentials = get_db_credentials(request.state.env_vars)
     return {}
