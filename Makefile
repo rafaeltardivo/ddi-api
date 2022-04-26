@@ -10,3 +10,5 @@ destroy:
 	docker compose down -v
 test:
 	docker compose exec device-data-ingestion-api su -c "pytest"
+simulate:
+	docker compose exec device-data-ingestion-api su -c "cd simulator && python simulator.py"
