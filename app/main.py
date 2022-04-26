@@ -55,7 +55,6 @@ async def get_device_histogram(
     db_credentials = get_db_credentials(request.state.env_vars)
     bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
     query_parameters = get_query_parameters(device_id, start, stop)
-    print(query_parameters)
     result = await get_histogram(db_credentials, bucket, query_parameters)
 
     return result
