@@ -6,6 +6,8 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
+from .fixtures import device_id, start, stop
+
 client = TestClient(app)
 
 
@@ -45,7 +47,7 @@ async def test_create_event(mocked_create_event):
 
 @pytest.mark.asyncio
 @patch("app.main.get_histogram", new_callable=AsyncMock)
-async def test_get_device_histogram(mocked_get_histogram):
+async def test_get_device_histogram(mocked_get_histogram, device_id, start, stop):
     mocked_response = {
         "ON": 1,
         "OFF": 2,
@@ -54,7 +56,6 @@ async def test_get_device_histogram(mocked_get_histogram):
     }
     mocked_get_histogram.return_value = mocked_response
 
-    device_id = "sensor-1"
-    qs = "start=2020-01-02T03:44:00&stop=2020-01-02T03:46:00"
+    qs = f"start={start}&stop={stop}"
     response = client.get(f"/devices/histogram/{device_id}?{qs}")
     assert response.json() == mocked_response
