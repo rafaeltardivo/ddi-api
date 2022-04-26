@@ -32,6 +32,7 @@ async def env_vars_middleware(request: Request, call_next):
 
 @app.get("/health")
 async def health(request: Request):
+    """Endpoint for health check."""
     db_credentials = get_db_credentials(request.state.env_vars)
     async with InfluxDBClientAsync(**db_credentials) as client:
         ready = await client.ping()
@@ -41,6 +42,7 @@ async def health(request: Request):
 
 @app.post("/devices/events", status_code=HTTPStatus.CREATED)
 async def create_device_event(request: Request, event: Event):
+    """Endpoint for event creation."""
     db_credentials = get_db_credentials(request.state.env_vars)
     bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
     result = await create_event(db_credentials, bucket, event)
@@ -55,6 +57,7 @@ async def get_device_histogram(
     start: str = Query(..., regex=ISO_TIMESTAMP_REGEX),
     stop: str | None = Query(None, regex=ISO_TIMESTAMP_REGEX),
 ):
+    """Endpoint for histogram generation."""
     db_credentials = get_db_credentials(request.state.env_vars)
     bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
     query_parameters = get_query_parameters(device_id, start, stop)
