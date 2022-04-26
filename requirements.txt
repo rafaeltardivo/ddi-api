@@ -1,6 +1,10 @@
+aiohttp==3.8.1
 fastapi==0.75.2
+influxdb==5.3.1
+influxdb-client==1.28.0
 pre-commit==2.15.0
 pytest==7.1.2
+pytest-asyncio==0.18.3
 python-dotenv==0.20.0
 requests==2.27.1
 uvicorn==0.17.6
