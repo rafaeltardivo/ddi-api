@@ -14,13 +14,7 @@ async def create_event(credentials: dict, bucket: str, event: Event) -> bool:
     Returns:
         bool: True if the event was successfully created, False otherwise.
     """
-    data = {
-        "measurement": "sensors",
-        "tags": {"deviceId": event.device_id},
-        "fields": {"status": event.status},
-        "time": event.timestamp,
-    }
-    result = await add_event(credentials, bucket, data)
+    result = await add_event(credentials, bucket, event.data())
 
     return result
 

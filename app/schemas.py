@@ -19,5 +19,13 @@ class Event(BaseModel):
     status: StatusEnum
     timestamp: str
 
+    def data(self):
+        return {
+            "measurement": "sensors",
+            "tags": {"deviceId": self.device_id},
+            "fields": {"status": self.status},
+            "time": self.timestamp,
+        }
+
     class Config:
         use_enum_values = True
