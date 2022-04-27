@@ -84,7 +84,7 @@ make simulate
 ### Final Considerations
 
 - This project is not "production ready". There's **a lot** to be improved here;
-- The async nature of the project is way to compensate for the lack of stream processing (the service is event drive and kafka would do a better job);
-- (Unfortunatelly) I was not able to create integrations tests (or even unit tests for the simulator). This would be my next step if I had more time;
+- The async nature of the project is a way to compensate for the lack of stream processing (the service is event driven and kafka would do a better job);
+- (Unfortunatelly) I was not able to create integration tests (or even unit tests for the simulator). This would be my next step if I had more time;
 - In a real world scenario, I would use [locust](https://locust.io/) as the simulator;
 - The API is not fully documented;
