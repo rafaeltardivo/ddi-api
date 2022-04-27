@@ -16,7 +16,7 @@ Device data ingestion API
 
 ## Architecture
 
-This is **lightweight** DDD application. The api is the adapter, the use_cases are the domain and the repository
+This is a **lightweight** DDD application. The api is the adapter, the use_cases are the domain and the repository
 is the bridge between domain and infrastructure.
 
 ## Configurations
