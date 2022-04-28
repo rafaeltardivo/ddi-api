@@ -1,7 +1,7 @@
 from collections import Counter
 
 from .schemas import Event
-from .repository import add_event, get_status_frequency
+from .repository import add_event, get_status_frequency, get_top_n_records
 
 
 async def create_event(credentials: dict, bucket: str, event: Event) -> bool:
@@ -34,3 +34,20 @@ async def get_histogram(
     frequency = await get_status_frequency(credentials, bucket, device_id, start, stop)
     histogram = Counter(frequency)
     return histogram
+
+
+async def get_indicator_top_n_records(
+    credentials: dict, bucket: str, device_id: str, indicator: str, limit: int
+) -> tuple:
+    """Get indicator top n records.
+    Args:
+        credentials (dict): dict containing database credentials.
+        bucket (str): target bucket.
+        device_id (str): device id.
+        indicator (str): device indicator.
+        limit (int): limit for db query.
+    Returns:
+        list: top n ocurrences.
+    """
+    records = await get_top_n_records(credentials, bucket, device_id, indicator, limit)
+    return records
