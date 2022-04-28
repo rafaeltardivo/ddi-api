@@ -50,7 +50,7 @@ async def create_device_event(request: Request, event: Event):
     return {"success": result}
 
 
-@app.get("/devices/histogram/{device_id}")
+@app.get("/devices/{device_id}/histogram")
 async def get_device_histogram(
     request: Request,
     device_id: str = Path(..., title="Device id", regex=DEVICE_ID_REGEX),
