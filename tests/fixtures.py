@@ -34,15 +34,6 @@ def device_id():
 
 
 @pytest.fixture
-def query_parameters():
-    return {
-        "deviceId": "sensor-1",
-        "start": "2020-01-02T03:44:00",
-        "stop": "2020-01-02T03:48:00",
-    }
-
-
-@pytest.fixture
 def qs(start, stop):
     return f"start={start}&stop={stop}"
 
@@ -60,6 +51,7 @@ def env_vars():
         "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN": "mocked_token",
         "DOCKER_INFLUXDB_INIT_ORG": "mocked_org",
     }
+
 
 @pytest.fixture
 def event_request_payload():
