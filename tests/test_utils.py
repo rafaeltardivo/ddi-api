@@ -7,11 +7,9 @@ from app.utils import (
     load_environment_variable,
     get_environment_variables,
     get_db_credentials,
-    get_query_parameters,
-    get_formatted_flux_query,
 )
 
-from .fixtures import env_vars, query_parameters, bucket, device_id, start, stop
+from .fixtures import env_vars, bucket, device_id, start, stop
 
 
 def test_load_environment_variable():
@@ -42,33 +40,4 @@ def test_get_db_credentials(env_vars):
     assert ret["token"] == env_vars["DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"]
     assert (
         ret["url"] == f"http://{env_vars['INFLUXDB_HOST']}:{env_vars['INFLUXDB_PORT']}"
-    )
-
-
-def test_get_query_parameters(device_id, start, stop):
-    ret = get_query_parameters(device_id, start, stop)
-
-    assert ret["deviceId"] == device_id
-    assert ret["start"] == start
-    assert ret["stop"] == stop
-
-
-def test_get_formatted_flux_query(bucket, query_parameters):
-    ret = get_formatted_flux_query(bucket, query_parameters)
-
-    assert ret == (
-        f' from(bucket:"{bucket}")'
-        f' |> range(start: {query_parameters["start"]}Z, stop: {query_parameters["stop"]}Z)'
-        f' |> filter(fn:(r) => r.deviceId == "{query_parameters["deviceId"]}")'
-    )
-
-
-def test_get_formatted_flux_query_without_stop(bucket, query_parameters):
-    query_parameters.pop("stop")
-    ret = get_formatted_flux_query(bucket, query_parameters)
-
-    assert ret == (
-        f' from(bucket:"{bucket}")'
-        f' |> range(start: {query_parameters["start"]}Z)'
-        f' |> filter(fn:(r) => r.deviceId == "{query_parameters["deviceId"]}")'
     )
