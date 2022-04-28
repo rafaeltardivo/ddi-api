@@ -15,7 +15,13 @@ def bucket():
 
 @pytest.fixture
 def event():
-    return Event(deviceId="sensor-1", status="ON", timestamp="2020-01-02T03:44:02")
+    return Event(
+        deviceId="sensor-1",
+        status="ON",
+        temperature=230,
+        timestamp="2020-01-02T03:44:02",
+        pressure=212.0,
+    )
 
 
 @pytest.fixture
