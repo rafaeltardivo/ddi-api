@@ -3,8 +3,8 @@ from http import HTTPStatus
 from fastapi import FastAPI, Request, Query, Path
 
 from .schemas import Event
-from .utils import get_environment_variables, get_db_credentials, get_query_parameters
-from .use_cases import create_event, get_histogram
+from .utils import get_environment_variables, get_db_credentials
+from .use_cases import create_event, get_histogram, get_indicator_top_n_records
 
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 
@@ -60,7 +60,24 @@ async def get_device_histogram(
     """Endpoint for histogram generation."""
     db_credentials = get_db_credentials(request.state.env_vars)
     bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
-    query_parameters = get_query_parameters(device_id, start, stop)
-    result = await get_histogram(db_credentials, bucket, query_parameters)
+    result = await get_histogram(db_credentials, bucket, device_id, start, stop)
 
     return result
+
+
+@app.get("/devices/{device_id}/top")
+async def get_device_indicator_top_n_records(
+    request: Request,
+    device_id: str = Path(..., title="Device id", regex=DEVICE_ID_REGEX),
+    indicator: str = Query(...),
+    limit: int = Query(...),
+):
+    """Endpoint to retrieve top n sensor indicator stats."""
+    print(indicator, limit)
+    db_credentials = get_db_credentials(request.state.env_vars)
+    bucket = request.state.env_vars["DOCKER_INFLUXDB_INIT_BUCKET"]
+    result = await get_indicator_top_n_records(
+        db_credentials, bucket, device_id, indicator, limit
+    )
+
+    return {"limit": limit, "indicator": indicator, "values": result}
